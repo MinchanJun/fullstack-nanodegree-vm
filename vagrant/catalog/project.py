@@ -11,6 +11,25 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+@app.route('/')
+@app.route('/category/')
+def showCategory():
+    category = session.query(Category).all()
+    return render_template('show_category.html',category=category)
+
+@app.route('/category/new/', methods=['GET', 'POST'])
+def newCategory():
+    return "Category Created"
+
+@app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
+def editCategory():
+    return "Category Edited"
+
+@app.route('/category/<int:category_id>/delete', methods=['GET', 'POST'])
+def deleteCategory():
+    return "Category Deleted"
+
+
 
 @app.route('/category/<int:category_id>/')
 def categoryItem(category_id):
