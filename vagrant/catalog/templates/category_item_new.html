@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cryptocurrency</title>
+  </head>
+  <body>
+    <div class="">
+      <h1>Add a new {{category.name}} details</h1>
+      <form class="" action="{{url_for('newCategoryItem',
+      category_id = category_id)}}" method="POST">
+        <div class="">
+          <h2>Name of details: (ex: price, description,
+            future price, related company...)</h2>
+          <input type="text" name="name" value="">
+        </div>
+        <div>
+          <p>Description of details: </p>
+          <input type="text" name="description" value="">
+        </div>
+        <div class="">
+          <input type="submit" name="" value="Create">
+        </div>
+    </div>
+  </body>
+</html>

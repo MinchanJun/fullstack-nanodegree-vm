@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cryptocurrencies</title>
+  </head>
+  <body>
+    <h1>{{ category.name }}</h1>
+
+    <div class="">
+      {% for i in items %}
+      <div>{{i.name}}</div>
+      <div>{{i.description}}</div>
+
+      {% endfor %}
+    </div>
+
+  </body>
+</html>
