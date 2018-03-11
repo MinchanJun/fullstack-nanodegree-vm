@@ -83,8 +83,14 @@ session.commit()
 categoryitem1 = CategoryItem(name="Acronym", description="XRP",
                     category=category3)
 
+session.add(categoryitem1)
+session.commit()
+
 categoryitem2 = CategoryItem(name="Price", description="$0.75",
                     category=category3)
+
+session.add(categoryitem2)
+session.commit()
 
 categoryitem3 = CategoryItem(name="Details", description="Ripple provides  \
                         global financial settlement solutions to enable  \
@@ -92,7 +98,8 @@ categoryitem3 = CategoryItem(name="Details", description="Ripple provides  \
                         information giving rise to an Internet of Value (IoV)",
                         category=category3)
 
-
+session.add(categoryitem3)
+session.commit()
 
 
 print "added category items!"
