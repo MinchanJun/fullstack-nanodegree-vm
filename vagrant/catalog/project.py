@@ -28,8 +28,17 @@ def newCategory():
         return render_template('category_new.html')
 
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
-def editCategory():
-    return "Category Edited"
+def editCategory(category_id):
+    edit_category = session.query(Category).filter_by(id = category_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            edit_category.name = request.form['name']
+        session.add(edit_category)
+        session.commit()
+        return redirect(url_for('showCategory'))
+    else:
+        return render_template('edit_category.html',category = edit_category)
+
 
 @app.route('/category/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategory():
