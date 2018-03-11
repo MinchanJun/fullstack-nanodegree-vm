@@ -11,12 +11,19 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
+'''
+Shows list of categories
+'''
 @app.route('/')
 @app.route('/category/')
 def showCategory():
     category = session.query(Category).all()
     return render_template('show_category.html',category=category)
 
+'''
+Create a category
+'''
 @app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
     if request.method == 'POST':
@@ -27,6 +34,9 @@ def newCategory():
     else:
         return render_template('category_new.html')
 
+'''
+Edit a category
+'''
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
 def editCategory(category_id):
     edit_category = session.query(Category).filter_by(id = category_id).one()
@@ -39,7 +49,9 @@ def editCategory(category_id):
     else:
         return render_template('edit_category.html',category = edit_category)
 
-
+'''
+Delete a category
+'''
 @app.route('/category/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategory(category_id):
     delete_category = session.query(Category).filter_by(id=category_id).one()
@@ -51,13 +63,19 @@ def deleteCategory(category_id):
         return render_template('delete_category.html',category=delete_category)
 
 
-
+'''
+Shows a list of category items
+'''
 @app.route('/category/<int:category_id>/')
 def categoryItem(category_id):
     category = session.query(Category).filter_by(id = category_id).one()
     items = session.query(CategoryItem).filter_by(category_id = category.id)
     return render_template('category_item.html', category=category, items=items)
 
+
+'''
+Create a list of category item
+'''
 @app.route('/category/<int:category_id>/new/', methods=['GET','POST'])
 def newCategoryItem(category_id):
     if request.method == 'POST':
@@ -73,7 +91,9 @@ def newCategoryItem(category_id):
                 category_id=category_id, category=category)
 
 
-
+'''
+Edit a list of category item
+'''
 @app.route('/category/<int:category_id>/<int:category_item_id>/edit/',\
             methods=['GET','POST'])
 def editCategoryItem(category_id,category_item_id):
@@ -95,7 +115,9 @@ def editCategoryItem(category_id,category_item_id):
                 category_id=category_id, category_item_id=category_item_id,\
                 category_item=edit_category_item)
 
-
+'''
+Delete a list of category item
+'''
 @app.route('/category/<int:category_id>/<int:category_item_id>/delete/', \
             methods=['GET','POST'])
 def deleteCategoryItem(category_id,category_item_id):
