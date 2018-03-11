@@ -19,7 +19,13 @@ def showCategory():
 
 @app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
-    return "Category Created"
+    if request.method == 'POST':
+        newCategory = Category(name=request.form['name'])
+        session.add(newCategory)
+        session.commit()
+        return redirect(url_for('showCategory'))
+    else:
+        return render_template('category_new.html')
 
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
 def editCategory():
