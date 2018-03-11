@@ -74,7 +74,25 @@ categoryitem3 = CategoryItem(name="Details", description="At its simplest, \
 session.add(categoryitem3)
 session.commit()
 
+# Category for Ripple
+category3 = Category(name="Ripple")
+
+session.add(category3)
+session.commit()
+
+categoryitem1 = CategoryItem(name="Acronym", description="XRP",
+                    category=category3)
+
+categoryitem2 = CategoryItem(name="Price", description="$0.75",
+                    category=category3)
+
+categoryitem3 = CategoryItem(name="Details", description="Ripple provides  \
+                        global financial settlement solutions to enable  \
+                        the world to exchange value like it already exchanges \
+                        information giving rise to an Internet of Value (IoV)",
+                        category=category3)
 
 
 
-print "added menu items!"
+
+print "added category items!"
