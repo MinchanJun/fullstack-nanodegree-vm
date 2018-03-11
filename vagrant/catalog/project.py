@@ -34,9 +34,27 @@ def newCategoryItem(category_id):
 
 
 
-@app.route('/category/<int:category_id>/<int:category_item_id>/edit/')
+@app.route('/category/<int:category_id>/<int:category_item_id>/edit/',\
+            methods=['GET','POST'])
 def editCategoryItem(category_id,category_item_id):
-    return "Category Item Edit Complete"
+    category = session.query(Category).filter_by(id = category_id).one()
+    edit_category_item = session.query(CategoryItem).filter_by(id = \
+                category_item_id).one()
+
+    if request.method == 'POST':
+        print "hello"
+        if request.form['name']:
+            edit_category_item.name = request.form['name']
+        if request.form['description']:
+            edit_category_item.description = request.form['description']
+        session.add(edit_category_item)
+        session.commit()
+        return redirect(url_for('categoryItem',category_id=category_id))
+    else:
+        return render_template('edit_category_item.html',\
+                category_id=category_id, category_item_id=category_item_id,\
+                category_item=edit_category_item)
+
 
 @app.route('/category/<int:category_id>/<int:category_item_id>/delete')
 def deleteCategoryItem(category_id,category_item_id):
