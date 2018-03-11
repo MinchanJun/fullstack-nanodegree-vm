@@ -56,9 +56,21 @@ def editCategoryItem(category_id,category_item_id):
                 category_item=edit_category_item)
 
 
-@app.route('/category/<int:category_id>/<int:category_item_id>/delete')
+@app.route('/category/<int:category_id>/<int:category_item_id>/delete/', \
+            methods=['GET','POST'])
 def deleteCategoryItem(category_id,category_item_id):
-    return "Category Item Delete Complete"
+    category = session.query(Category).filter_by(id = category_id).one()
+    delete_category_item = session.query(CategoryItem).filter_by(id = \
+            category_item_id).one()
+    if request.method == 'POST':
+        session.delete(delete_category_item)
+        session.commit()
+        return redirect(url_for('categoryItem', category_id=category_id))
+    else:
+        return render_template('delete_category_item.html',\
+                category_id=category_id,\
+                category_item=delete_category_item)
+
 
 if __name__ == '__main__':
     app.debug = True
