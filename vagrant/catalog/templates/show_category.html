@@ -20,6 +20,10 @@
     <div class="">
       {% for c in category %}
       <div>{{c.name}}</div>
+      <a href="{{url_for('categoryItem',category_id=c.id)}}">See Category Details</a>
+      <a href="{{url_for('editCategory',category_id=c.id)}}">Edit</a>
+      <a href="{{url_for('deleteCategory', category_id=c.id)}}">Delete</a></div>
+      <br>
 
       {% endfor %}
     </div>

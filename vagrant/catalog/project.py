@@ -116,7 +116,13 @@ def editCategoryItem(category_id,category_item_id):
         flash("%s Coin Category Edited" % edit_category_item.name)
         return redirect(url_for('categoryItem',category_id=category_id))
     else:
-        return render_template('edit_category_item.html',\
+        #Found bug. If you're editing category item, category_item_id
+        #doesn't depend on the category_id when you manually type in the URL.
+        #Fixed this issue
+        if category_id != edit_category_item.category_id:
+            return render_template('error.html')
+        else:
+            return render_template('edit_category_item.html',\
                 category_id=category_id, category_item_id=category_item_id,\
                 category_item=edit_category_item)
 

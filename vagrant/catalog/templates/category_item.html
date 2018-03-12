@@ -23,7 +23,8 @@
       <div>{{i.id}}</div>
       <div>{{i.name}}</div>
       <div>{{i.description}}</div>
-
+      <a href="{{url_for('editCategoryItem',category_id=category.id, category_item_id=i.id)}}">Edit</a>
+      <a href="{{url_for('deleteCategory', category_id=category.id, category_item_id=i.id)}}">Delete</a></div>
       {% endfor %}
     </div>
 
