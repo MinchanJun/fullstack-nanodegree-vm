@@ -6,7 +6,17 @@
   </head>
   <body>
     <h1>List of coins based on blockchain</h1>
-
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="flash">
+      <ul>
+        {% for message in messages %}
+          <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
     <div class="">
       {% for c in category %}
       <div>{{c.name}}</div>

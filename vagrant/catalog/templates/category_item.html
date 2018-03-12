@@ -6,9 +6,21 @@
   </head>
   <body>
     <h1>{{ category.name }}</h1>
-
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="flash">
+      <ul>
+        {% for message in messages %}
+          <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% endwith %}
+    <p>{{category.id}}</p>
     <div class="">
       {% for i in items %}
+      <div>{{i.id}}</div>
       <div>{{i.name}}</div>
       <div>{{i.description}}</div>
 

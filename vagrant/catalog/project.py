@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -30,6 +30,7 @@ def newCategory():
         newCategory = Category(name=request.form['name'])
         session.add(newCategory)
         session.commit()
+        flash("%s Added" % newCategory.name)
         return redirect(url_for('showCategory'))
     else:
         return render_template('category_new.html')
@@ -45,6 +46,7 @@ def editCategory(category_id):
             edit_category.name = request.form['name']
         session.add(edit_category)
         session.commit()
+        flash("Coin Edited to %s " % edit_category.name)
         return redirect(url_for('showCategory'))
     else:
         return render_template('edit_category.html',category = edit_category)
@@ -58,6 +60,7 @@ def deleteCategory(category_id):
     if request.method == 'POST':
         session.delete(delete_category)
         session.commit()
+        flash("%s Coin Deleted" % delete_category.name)
         return redirect(url_for('showCategory'))
     else:
         return render_template('delete_category.html',category=delete_category)
@@ -84,6 +87,8 @@ def newCategoryItem(category_id):
                         category_id=category_id)
         session.add(newCategoryItem)
         session.commit()
+        print newCategoryItem.id
+        flash("New Coin Category Added %s" % newCategoryItem.name)
         return redirect(url_for('categoryItem',category_id=category_id))
     else:
         category = session.query(Category).filter_by(id = category_id).one()
@@ -97,18 +102,18 @@ Edit a list of category item
 @app.route('/category/<int:category_id>/<int:category_item_id>/edit/',\
             methods=['GET','POST'])
 def editCategoryItem(category_id,category_item_id):
-    category = session.query(Category).filter_by(id = category_id).one()
+    category = session.query(Category).filter_by(id=category_id).one()
     edit_category_item = session.query(CategoryItem).filter_by(id = \
                 category_item_id).one()
-
     if request.method == 'POST':
-        print "hello"
+
         if request.form['name']:
             edit_category_item.name = request.form['name']
         if request.form['description']:
             edit_category_item.description = request.form['description']
         session.add(edit_category_item)
         session.commit()
+        flash("%s Coin Category Edited" % edit_category_item.name)
         return redirect(url_for('categoryItem',category_id=category_id))
     else:
         return render_template('edit_category_item.html',\
@@ -127,6 +132,7 @@ def deleteCategoryItem(category_id,category_item_id):
     if request.method == 'POST':
         session.delete(delete_category_item)
         session.commit()
+        flash("%s Coin Category Deleted" % delete_category_item.name)
         return redirect(url_for('categoryItem', category_id=category_id))
     else:
         return render_template('delete_category_item.html',\
@@ -135,5 +141,6 @@ def deleteCategoryItem(category_id,category_item_id):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key' # This is for flash
     app.debug = True
     app.run(host = '0.0.0.0', port = 5000)
