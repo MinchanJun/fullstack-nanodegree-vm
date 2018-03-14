@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, \
+                flash, jsonify
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -145,7 +146,25 @@ def deleteCategoryItem(category_id,category_item_id):
                 category_id=category_id,\
                 category_item=delete_category_item)
 
+@app.route('/category/JSON')
+def categoryJSON():
+    category = session.query(Category)
+    json = jsonify(CategoryList=[r.serialize for r in category])
+    return json
 
+@app.route('/category/<int:category_id>/JSON')
+def categoryItemJSON(category_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    category_item = session.query(CategoryItem).filter_by(category_id=category_id).all()
+    json = jsonify(CategoryItemList=[r.serialize for r in category_item])
+    return json
+
+@app.route('/category/<int:category_id>/<int:category_item_id>/JSON')
+def categoryItemSpecificJSON(category_id,category_item_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    category_item = session.query(CategoryItem).filter_by(id=category_item_id).one()
+    json = jsonify(CategoryItemListSpecifc =category_item.serialize)
+    return json
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key' # This is for flash
     app.debug = True
