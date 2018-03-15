@@ -90,7 +90,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
+        response = make_response(json.dumps('Current user is  \
+        already connected.'),
                                  200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -116,11 +117,41 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: \
+    150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
+@app.route('/gdisconnect')
+def gdisconnect():
+    access_token = login_session.get('access_token')
+    if access_token is None:
+        print 'Access Token is None'
+        response = make_response(json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    print 'In gdisconnect access token is %s', access_token
+    print 'User name is: '
+    print login_session['username']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+    print 'result is '
+    print result
+    if result['status'] == '200':
+        del login_session['access_token']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
 
 '''
@@ -137,6 +168,10 @@ Create a category
 '''
 @app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
+    # To protect page from unexpected user
+    if 'username' not in login_session:
+        return redirect('/login')
+
     if request.method == 'POST':
         newCategory = Category(name=request.form['name'])
         session.add(newCategory)
@@ -151,6 +186,9 @@ Edit a category
 '''
 @app.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
 def editCategory(category_id):
+    # To protect page from unexpected user
+    if 'username' not in login_session:
+        return redirect('/login')
     edit_category = session.query(Category).filter_by(id = category_id).one()
     if request.method == 'POST':
         if request.form['name']:
@@ -167,6 +205,10 @@ Delete a category
 '''
 @app.route('/category/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategory(category_id):
+    # To protect page from unexpected user
+    if 'username' not in login_session:
+        return redirect('/login')
+
     delete_category = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         session.delete(delete_category)
@@ -192,6 +234,10 @@ Create a list of category item
 '''
 @app.route('/category/<int:category_id>/new/', methods=['GET','POST'])
 def newCategoryItem(category_id):
+    # To protect page from unexpected user
+    if 'username' not in login_session:
+        return redirect('/login')
+
     if request.method == 'POST':
         newCategoryItem = CategoryItem(name=request.form['name'],\
                         description=request.form['description'],\
@@ -213,6 +259,10 @@ Edit a list of category item
 @app.route('/category/<int:category_id>/<int:category_item_id>/edit/',\
             methods=['GET','POST'])
 def editCategoryItem(category_id,category_item_id):
+    # To protect page from unexpected user
+    if 'username' not in login_session:
+        return redirect('/login')
+
     category = session.query(Category).filter_by(id=category_id).one()
     edit_category_item = session.query(CategoryItem).filter_by(id = \
                 category_item_id).one()
@@ -243,6 +293,10 @@ Delete a list of category item
 @app.route('/category/<int:category_id>/<int:category_item_id>/delete/', \
             methods=['GET','POST'])
 def deleteCategoryItem(category_id,category_item_id):
+    # To protect page from unexpected user
+    if 'username' not in login_session:
+        return redirect('/login')
+
     category = session.query(Category).filter_by(id = category_id).one()
     delete_category_item = session.query(CategoryItem).filter_by(id = \
             category_item_id).one()
