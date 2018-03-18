@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Category, CategoryItem
+from models import Base, Category, CategoryItem, User
 
 #Imports for login session for 3rd party
 from flask import session as login_session
@@ -21,7 +21,7 @@ import requests
 CLIENT_ID = json.loads(
     open('client_secrets.json','r').read())['web']['client_id']
 
-engine = create_engine('sqlite:///itemcatalogapp.db')
+engine = create_engine('sqlite:///itemcatalogapp_copy.db')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -111,6 +111,13 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+
+    # see if user exists, if it doesn't make a new one
+    user_id = getUserID(login_session["email"])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -123,6 +130,29 @@ def gconnect():
     print "done!"
     return output
 
+# User Helper Functions
+
+
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session['email'],
+                picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
@@ -134,7 +164,8 @@ def gdisconnect():
     print 'In gdisconnect access token is %s', access_token
     print 'User name is: '
     print login_session['username']
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % \
+        login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     print 'result is '
@@ -149,7 +180,8 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('Failed to revoke token for\
+        given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -161,7 +193,11 @@ Shows list of categories
 @app.route('/category/')
 def showCategory():
     category = session.query(Category).all()
-    return render_template('show_category.html',category=category)
+
+    if 'username' not in login_session:
+        return render_template('public_category.html', category=category)
+    else:
+        return render_template('show_category.html',category=category)
 
 '''
 Create a category
@@ -173,7 +209,8 @@ def newCategory():
         return redirect('/login')
 
     if request.method == 'POST':
-        newCategory = Category(name=request.form['name'])
+        newCategory = Category(name=request.form['name'], user_id= \
+                login_session['user_id'])
         session.add(newCategory)
         session.commit()
         flash("%s Added" % newCategory.name)
@@ -190,6 +227,10 @@ def editCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
     edit_category = session.query(Category).filter_by(id = category_id).one()
+    if edit_category.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not\
+                authorized to edit');}</script>\
+                <body onload='myFunction()''>"
     if request.method == 'POST':
         if request.form['name']:
             edit_category.name = request.form['name']
@@ -208,8 +249,11 @@ def deleteCategory(category_id):
     # To protect page from unexpected user
     if 'username' not in login_session:
         return redirect('/login')
-
     delete_category = session.query(Category).filter_by(id=category_id).one()
+    if delete_category.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not \
+                authorized to edit');}</script>\
+                <body onload='myFunction()''>"
     if request.method == 'POST':
         session.delete(delete_category)
         session.commit()
@@ -226,7 +270,13 @@ Shows a list of category items
 def categoryItem(category_id):
     category = session.query(Category).filter_by(id = category_id).one()
     items = session.query(CategoryItem).filter_by(category_id = category.id)
-    return render_template('category_item.html', category=category, items=items)
+    creator = getUserInfo(category.user_id)
+    if 'username' not in login_session or creator.id != login_session['user_id']:
+        return render_template('public_category_item.html', category=category,
+                 items=items, creator= creator)
+    else:
+        return render_template('category_item.html', category=category,
+                items=items, creator = creator)
 
 
 '''
@@ -238,10 +288,16 @@ def newCategoryItem(category_id):
     if 'username' not in login_session:
         return redirect('/login')
 
+    # add this line for user_id
+    category = session.query(Category).filter_by(id=category_id).one()
+    if login_session['user_id'] != category.user_id:
+        return "<script>function myFunction() {alert('You are not \
+                authorized to add');}</script>\
+                <body onload='myFunction()''>"
     if request.method == 'POST':
         newCategoryItem = CategoryItem(name=request.form['name'],\
                         description=request.form['description'],\
-                        category_id=category_id)
+                        category_id=category_id, user_id=category.user_id)
         session.add(newCategoryItem)
         session.commit()
         print newCategoryItem.id
@@ -266,6 +322,10 @@ def editCategoryItem(category_id,category_item_id):
     category = session.query(Category).filter_by(id=category_id).one()
     edit_category_item = session.query(CategoryItem).filter_by(id = \
                 category_item_id).one()
+    if login_session['user_id'] != category.user_id:
+        return "<script>function myFunction() {alert('You are not \
+                authorized to edit');}</script>\
+                <body onload='myFunction()''>"
     if request.method == 'POST':
 
         if request.form['name']:
@@ -300,6 +360,10 @@ def deleteCategoryItem(category_id,category_item_id):
     category = session.query(Category).filter_by(id = category_id).one()
     delete_category_item = session.query(CategoryItem).filter_by(id = \
             category_item_id).one()
+    if login_session['user_id'] != category.user_id:
+        return "<script>function myFunction() {alert('You are not \
+                authorized to delete');}</script>\
+                <body onload='myFunction()''>"
     if request.method == 'POST':
         session.delete(delete_category_item)
         session.commit()
