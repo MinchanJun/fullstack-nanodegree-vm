@@ -1,35 +1,51 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Cryptocurrencies</title>
-  </head>
-  <body>
-    <div class="">
-      <div class="">
-        <a href="">Click Here to Log in </a>
+{% extends "main.html" %}
+{% block content %}
+
+    <div class="header">
+      <div class="title">
+        <h1>Coinance</h1>
+      </div>
+      <div class="login">
+        <a class="btn btn-primary btn-lg" href="{{url_for('showLogin')}}">Log in</a>
       </div>
     </div>
-    <h1>List of coins based on blockchain</h1>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="flash">
-      <ul>
-        {% for message in messages %}
-          <li> <strong> {{ message }} </strong> </li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-    {% endwith %}
-    <div class="">
-      {% for c in category %}
-      <div>{{c.name}}</div>
-      <a href="{{url_for('categoryItem',category_id=c.id)}}">See Category Details</a>
-      <br>
 
-      {% endfor %}
+    <div class="container">
+
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="flash">
+        <ul>
+          {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      <div class="row list-group d-flex flex-row">
+        <div class="col-4 p-2">
+          <div class="col-4__crypto">
+            {% for c in category %}
+            <div class="list-group">
+              <a class="btn btn-primary" href="{{url_for('categoryItem',category_id=c.id)}}" >{{c.name}}</a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-8 d-flex flex-row">
+          <div class="col-8__updated p-2">
+            <h3 class="color">Newest Update</h3>
+            {% for cil in category_item_list %}
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item-light">{{ cil.name }} ({{ cil.category.name }})</li>
+            </ul>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
     </div>
 
-  </body>
-</html>
+
+{% endblock %}

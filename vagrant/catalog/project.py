@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, \
                 flash, jsonify
 app = Flask(__name__)
 
-from sqlalchemy import create_engine
+# Update desc function to get the most updated result
+from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
 from models import Base, Category, CategoryItem, User
 
@@ -17,6 +18,7 @@ import httplib2
 import json
 from flask import make_response
 import requests
+import os
 
 CLIENT_ID = json.loads(
     open('client_secrets.json','r').read())['web']['client_id']
@@ -193,11 +195,11 @@ Shows list of categories
 @app.route('/category/')
 def showCategory():
     category = session.query(Category).all()
-
+    category_item_list = session.query(CategoryItem).order_by(desc(CategoryItem.id)).all()
     if 'username' not in login_session:
-        return render_template('public_category.html', category=category)
+        return render_template('public_category.html', category=category, category_item_list= category_item_list)
     else:
-        return render_template('show_category.html',category=category)
+        return render_template('show_category.html',category=category, category_item_list = category_item_list)
 
 '''
 Create a category
@@ -268,15 +270,16 @@ Shows a list of category items
 '''
 @app.route('/category/<int:category_id>/')
 def categoryItem(category_id):
+    category_list = session.query(Category).all()
     category = session.query(Category).filter_by(id = category_id).one()
     items = session.query(CategoryItem).filter_by(category_id = category.id)
     creator = getUserInfo(category.user_id)
     if 'username' not in login_session or creator.id != login_session['user_id']:
         return render_template('public_category_item.html', category=category,
-                 items=items, creator= creator)
+                 items=items, creator= creator, category_list = category_list)
     else:
         return render_template('category_item.html', category=category,
-                items=items, creator = creator)
+                items=items, creator = creator, category_list = category_list)
 
 
 '''
@@ -393,6 +396,20 @@ def categoryItemSpecificJSON(category_id,category_item_id):
     category_item = session.query(CategoryItem).filter_by(id=category_item_id).one()
     json = jsonify(CategoryItemListSpecifc =category_item.serialize)
     return json
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key' # This is for flash
     app.debug = True

@@ -18,13 +18,19 @@
     {% endif %}
     {% endwith %}
     <p>{{category.id}}</p>
-    <div class="">
+    <div class="container">
       {% for i in items %}
       <div>{{i.id}}</div>
       <div>{{i.name}}</div>
       <div>{{i.description}}</div>
       <a href="{{url_for('editCategoryItem',category_id=category.id, category_item_id=i.id)}}">Edit</a>
       <a href="{{url_for('deleteCategory', category_id=category.id, category_item_id=i.id)}}">Delete</a></div>
+      {% endfor %}
+    </div>
+    <br>
+    <div class="container">
+      {% for cl in category_list %}
+      <div><a href="#"></a>{{ cl.name }}</div>
       {% endfor %}
     </div>
 

@@ -1,0 +1,50 @@
+body{
+  background-image: url("crypto_title.jpg");
+}
+.header{
+  display: flex;
+  background-color: #CEFEFF;
+  margin-bottom: 5%;
+}
+.title{
+  font-family: 'Indie Flower',cursive;
+  max-width: 100%;
+  margin-right: 25%;
+}
+.login{
+  max-width: 100%;
+  margin-left: 35%;
+}
+.flash{
+  max-width: 100%;
+  background-color: blue;
+}
+
+.content__crypto{
+  width: 45vw;
+  font-size:1.5em;
+  margin-left: 5%;
+  background-color: green;
+
+}
+.content__updated{
+  width: 30vw;
+  font-size: 1.5em;
+  margin-left: 5%;
+  background-color: green;
+}
+.col-8__updated{
+  margin-left: 30%;
+}
+.btn-secondary{
+  width: 30%;
+}
+.btn-danger{
+  width: 30%;
+}
+.list-group-item-info{
+  margin-bottom: 5%;
+}
+.color{
+  color: white;
+}
