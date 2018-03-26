@@ -1,22 +1,18 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Cryptocurrency</title>
-  </head>
-  <body>
-    <div class="">
-      <h1>Add a new coin</h1>
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+    <div class="container">
+
       <form class="" action="{{url_for('newCategory')}}"
         method="POST">
-        <div class="">
-          <h2>Name of coin: (ex: Litecoin, Dash,
-            NEM, Ethereum Classic...)</h2>
-          <input type="text" name="name" value="">
+        <h1 class="color">Add a new coin</h1>
+        <div class="form-group">
+          <label for="formGroupExampleInput" class="color">Name of Coin (ex: Litecoin, Dash,
+            NEM, Ethereum Classic...)</label>
+          <input type="text" class="form-control" name="name" id="formGroupExampleInput">
         </div>
-        <div class="">
-          <input type="submit" name="" value="Create">
-        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </form>
     </div>
-  </body>
-</html>
+{% endblock %}

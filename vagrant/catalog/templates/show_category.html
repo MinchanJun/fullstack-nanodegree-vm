@@ -22,11 +22,12 @@
             <div class="list-group">
               <a class="btn btn-primary" href="{{url_for('categoryItem',category_id=c.id)}}" >{{c.name}}, {{c.user_id}}, {{c.user.email}}</a>
               {% if c.user.email == category_user %}
-              <a class="btn btn-secondary" href="{{url_for('editCategory',category_id=c.id)}}">Edit</a>
+              <a class="btn btn-secondary" href="{{url_for('editCategory',category_id=c.id)}}">Edit {{c.id}}</a>
               <a class="btn btn-danger" href="{{url_for('deleteCategory', category_id=c.id)}}">Delete</a>
               {% endif %}
             </div>
             {% endfor %}
+            <a class="btn btn-success" href="{{url_for('newCategory')}}">Add a new coin </a>
           </div>
         </div>
         <div class="col-8 d-flex flex-row">
