@@ -1,15 +1,6 @@
 {% extends "main.html" %}
 {% block content %}
-
-
-    <div class="header">
-      <div class="title">
-        <h1>Coinance</h1>
-      </div>
-      <div class="login">
-        <a class="btn btn-primary btn-lg" href="{{url_for('showLogin')}}">Log out</a>
-      </div>
-    </div>
+{% include "header.html" %}
 
     <div class="container">
       {% with messages = get_flashed_messages() %}
@@ -29,9 +20,11 @@
           <div class="col-4__crypto">
             {% for c in category %}
             <div class="list-group">
-              <a class="btn btn-primary" href="{{url_for('categoryItem',category_id=c.id)}}" >{{c.name}}</a>
+              <a class="btn btn-primary" href="{{url_for('categoryItem',category_id=c.id)}}" >{{c.name}}, {{c.user_id}}, {{c.user.email}}</a>
+              {% if c.user.email == category_user %}
               <a class="btn btn-secondary" href="{{url_for('editCategory',category_id=c.id)}}">Edit</a>
               <a class="btn btn-danger" href="{{url_for('deleteCategory', category_id=c.id)}}">Delete</a>
+              {% endif %}
             </div>
             {% endfor %}
           </div>

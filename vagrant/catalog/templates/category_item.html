@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Cryptocurrencies</title>
-  </head>
-  <body>
-    <h1>{{ category.name }}</h1>
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+
+    <div class="container">
+
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <div class="flash">
@@ -17,22 +16,33 @@
     </div>
     {% endif %}
     {% endwith %}
-    <p>{{category.id}}</p>
-    <div class="container">
-      {% for i in items %}
-      <div>{{i.id}}</div>
-      <div>{{i.name}}</div>
-      <div>{{i.description}}</div>
-      <a href="{{url_for('editCategoryItem',category_id=category.id, category_item_id=i.id)}}">Edit</a>
-      <a href="{{url_for('deleteCategory', category_id=category.id, category_item_id=i.id)}}">Delete</a></div>
-      {% endfor %}
-    </div>
-    <br>
-    <div class="container">
-      {% for cl in category_list %}
-      <div><a href="#"></a>{{ cl.name }}</div>
-      {% endfor %}
-    </div>
 
-  </body>
-</html>
+    <div class="row list-group d-flex flex-row">
+      <div class="col-4 p-2">
+        {% for cl in category_list %}
+        <div class="list-group">
+          <a class="btn btn-primary" href="#">{{ cl.name }}</a>
+        </div>
+        {% endfor %}
+      </div>
+
+
+    <div class="col-8 d-flex flex-row">
+      <div class="col-8__updated p-2">
+        <h3 class="color">{{category.name}}</h3>
+        {% for i in items %}
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item-light">{{i.id}}</li>
+          <li class="list-group-item-light">{{i.name}}</li>
+          <li class="list-group-item-light">{{i.description}}</li>
+          <a href="{{url_for('editCategoryItem',category_id=category.id, category_item_id=i.id)}}">Edit</a>
+          <a href="{{url_for('deleteCategory', category_id=category.id, category_item_id=i.id)}}">Delete</a></div>
+        </ul>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+{% endblock %}

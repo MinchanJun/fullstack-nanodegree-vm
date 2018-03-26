@@ -29,11 +29,12 @@
           <div class="col-4__crypto">
             {% for c in category %}
             <div class="list-group">
-              <a class="btn btn-primary" href="{{url_for('categoryItem',category_id=c.id)}}" >{{c.name}}</a>
+              <a class="btn btn-primary" href="{{url_for('categoryItem',category_id=c.id)}}" >{{c.name}}, {{c.user_id}}, {{c.user.email}} </a>
             </div>
             {% endfor %}
           </div>
         </div>
+
         <div class="col-8 d-flex flex-row">
           <div class="col-8__updated p-2">
             <h3 class="color">Newest Update</h3>
