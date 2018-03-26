@@ -29,6 +29,7 @@
     <div class="col-8 d-flex flex-row">
       <div class="col-8__updated p-2">
         <h3 class="color">{{category.name}}</h3>
+        <a href="{{url_for('newCategoryItem',category_id=category.id)}}">Add Details</a>
         <table class="table table-sm table-dark">
           <thead>
             <tr>
