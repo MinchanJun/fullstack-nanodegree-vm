@@ -98,9 +98,12 @@ def fbconnect():
 
     # see if user exists
     user_id = getUserID(login_session['email'])
+    print "This is login_session['user_id'] showingngngng: ", user_id
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
+    print "This is login_session['user_id'] showingngngng: ", login_session['user_id'], login_session['email']
+
 
     output = ''
     output += '<h1>Welcome, '
@@ -196,6 +199,7 @@ def gconnect():
 
     data = answer.json()
 
+    login_session['provider'] = 'google'
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
@@ -203,9 +207,12 @@ def gconnect():
 
     # see if user exists, if it doesn't make a new one
     user_id = getUserID(login_session["email"])
+    print "This is user_id showingngngng: ", user_id
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
+    print "This is login_session['user_id'] showingngngng: ", login_session['user_id'], login_session['email']
+
 
     output = ''
     output += '<h1>Welcome, '
@@ -260,11 +267,6 @@ def gdisconnect():
     print 'result is '
     print result
     if result['status'] == '200':
-        del login_session['access_token']
-        del login_session['gplus_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -273,6 +275,31 @@ def gdisconnect():
         given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
+# Disconnect based on provider
+@app.route('/disconnect')
+def disconnect():
+
+    if 'provider' in login_session:
+        if login_session['provider'] == 'google':
+            print "Hahahaha"
+            gdisconnect()
+            del login_session['gplus_id']
+            del login_session['access_token']
+        if login_session['provider'] == 'facebook':
+            fbdisconnect()
+            del login_session['facebook_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        del login_session['user_id']
+        del login_session['provider']
+        flash("You have successfully been logged out.")
+        return redirect(url_for('showCategory'))
+    else:
+        flash("You were not logged in")
+        return redirect(url_for('showCategory'))
+
 
 
 '''
@@ -283,10 +310,13 @@ Shows list of categories
 def showCategory():
     category = session.query(Category).all()
     category_item_list = session.query(CategoryItem).order_by(desc(CategoryItem.id)).all()
+
+    #print "hello", category.user_id
     if 'username' not in login_session:
         return render_template('public_category.html', category=category, category_item_list= category_item_list)
     else:
-        return render_template('show_category.html',category=category, category_item_list = category_item_list)
+        category_user = login_session['email']
+        return render_template('show_category.html',category=category, category_item_list = category_item_list, category_user=category_user)
 
 '''
 Create a category
@@ -361,9 +391,11 @@ def categoryItem(category_id):
     category = session.query(Category).filter_by(id = category_id).one()
     items = session.query(CategoryItem).filter_by(category_id = category.id)
     creator = getUserInfo(category.user_id)
+    # print "This is creator id: ", category.id, category.name, category.user.email
+    # print "This is login_session['user_id']: ",login_session['user_id'], login_session['email']
     if 'username' not in login_session or creator.id != login_session['user_id']:
         return render_template('public_category_item.html', category=category,
-                 items=items, creator= creator, category_list = category_list)
+                 items=items, category_list = category_list)
     else:
         return render_template('category_item.html', category=category,
                 items=items, creator = creator, category_list = category_list)
