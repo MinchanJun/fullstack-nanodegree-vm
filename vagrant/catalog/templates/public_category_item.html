@@ -28,24 +28,33 @@
       <div class="col-4 p-2">
         {% for cl in category_list %}
         <div class="list-group">
-          <a class="btn btn-primary" href="#">{{ cl.name }}</a>
+          <a class="btn btn-primary" href="{{url_for('categoryItem',category_id=cl.id)}}">{{ cl.name }}</a>
         </div>
         {% endfor %}
       </div>
 
-
-    <div class="col-8 d-flex flex-row">
-      <div class="col-8__updated p-2">
-        <h3 class="color">{{category.name}}</h3>
-        {% for i in items %}
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item-light">{{i.id}}</li>
-          <li class="list-group-item-light">{{i.name}}</li>
-          <li class="list-group-item-light">{{i.description}}</li>
-        </ul>
-        {% endfor %}
+      <div class="col-8 d-flex flex-row">
+        <div class="col-8__updated p-2">
+          <h3 class="color">{{category.name}}</h3>
+          <table class="table table-sm table-dark">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in items %}
+              <tr>
+                <td>{{i.name}}</td>
+                <td>{{i.description}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+
   </div>
   </div>
 
