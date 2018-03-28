@@ -2,10 +2,12 @@
 {% block content %}
 
     <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-      <a class="navbar-brand title" href="{{url_for('showCategory')}}">Coinance</a>
+      <a class="navbar-brand title"
+      href="{{url_for('showCategory')}}">Coinance</a>
       <div class="navbar-nav">
         <li class="nav-item active my-2 my-lg-0">
-          <a class="btn btn-primary btn-lg" href="{{url_for('showLogin')}}">Log in</a>
+          <a class="btn btn-primary btn-lg"
+          href="{{url_for('showLogin')}}">Log in</a>
         </li>
       </div>
     </nav>
@@ -32,17 +34,12 @@
             <h3 class="color">List of cryptocurrency</h3>
             {% for c in category %}
             <div class="list-group">
-              {% if c.user.email == category_user %}
               <div class="list-group-item">
-              <a class="list-group-item list-group-item-action flex-column align-items-start active" href="{{url_for('categoryItem',category_id=c.id)}}" >{{c.name}}</a>
-              <a class="" href="{{url_for('editCategory',category_id=c.id)}}">Edit</a>
-              <a class="" href="{{url_for('deleteCategory', category_id=c.id)}}">Delete</a>
+              <a class="list-group-item list-group-item-action
+              flex-column align-items-start active"
+              href="{{url_for('categoryItem',category_id=c.id)}}" >
+              {{c.name}}</a>
               </div>
-              {% else %}
-              <div class="list-group-item">
-              <a class="list-group-item list-group-item-action flex-column align-items-start active" href="{{url_for('categoryItem',category_id=c.id)}}" >{{c.name}}</a>
-              </div>
-              {% endif %}
             </div>
             {% endfor %}
           </div>
@@ -53,7 +50,8 @@
             <h3 class="color">Newest Update</h3>
             {% for cil in category_item_list %}
             <ul class="list-group list-group-flush">
-              <li class="list-group-item">{{ cil.name }} ({{ cil.category.name }})</li>
+              <li class="list-group-item">{{ cil.name }}
+                ({{ cil.category.name }})</li>
             </ul>
             {% endfor %}
           </div>

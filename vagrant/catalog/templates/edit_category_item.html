@@ -4,12 +4,19 @@
 
     <div class="container">
       <form class="" action="{{url_for('editCategoryItem',
-      category_id = category_id, category_item_id=category_item.id)}}" method="POST">
+      category_id = category_id,
+      category_item_id=category_item.id)}}" method="POST">
         <div class="form-group">
-          <label for="formGroupExampleInput" class="color">Name of Details</label>
-          <input type="text" class="form-control" name="name" id="formGroupExampleInput" placeholder="{{category_item.name}}">
-          <label for="formGroupExampleInput2" class="color">Description of Details</label>
-          <input type="text" class="form-control" name="description" id="formGroupExampleInput2" placeholder="{{category_item.description}}">
+          <label for="formGroupExampleInput" class="color">
+            Name of Details</label>
+          <input type="text" class="form-control" name="name"
+          id="formGroupExampleInput"
+          placeholder="{{category_item.name}}">
+          <label for="formGroupExampleInput2"
+          class="color">Description of Details</label>
+          <input type="text" class="form-control" name="description"
+          id="formGroupExampleInput2"
+          placeholder="ex: {{category_item.description}}">
           </div>
 
           <button type="submit" class="btn btn-primary">Edit</button>

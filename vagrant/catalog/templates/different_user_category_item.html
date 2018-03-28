@@ -19,12 +19,19 @@
 
     <div class="row list-group d-flex flex-row">
       <div class="col-4 p-2">
-        <h3 class="color">List of cryptocurrency</h3>
-        {% for cl in category_list %}
-        <div class="list-group">
-          <a class="btn btn-primary" href="{{url_for('categoryItem',category_id=cl.id)}}">{{ cl.name }}</a>
+        <div class="col-4__crypto">
+          <h3 class="color">List of cryptocurrency</h3>
+          {% for cl in category_list %}
+          <div class="list-group">
+            <div class="list-group-item">
+            <a class="list-group-item list-group-item-action
+            flex-column align-items-start active"
+            href="{{url_for('categoryItem',category_id=cl.id)}}" >
+            {{cl.name}}</a>
+            </div>
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
 
     <div class="col-8 d-flex flex-row">

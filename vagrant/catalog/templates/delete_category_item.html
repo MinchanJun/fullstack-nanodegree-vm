@@ -4,9 +4,11 @@
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
       </div>
-      <h1>Are you sure you want to delete {{category_item.name}} with details?</h1>
+      <h1>Are you sure you want to delete
+        {{category_item.name}} with details?</h1>
       <form class="" action="{{url_for('deleteCategoryItem',
-      category_id=category_id,category_item_id=category_item.id)}}" method="POST">
+      category_id=category_id,category_item_id=category_item.id)}}"
+      method="POST">
         <button type="submit" class="btn btn-primary">Delete</button>
       </form>
     </div>
