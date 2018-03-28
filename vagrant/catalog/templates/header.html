@@ -1,8 +1,8 @@
-<div class="header">
-  <div class="title">
-    <h1><a href="{{url_for('showCategory')}}">Coinance</a></h1>
-  </div>
-  <div class="login">
+<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+  <a class="navbar-brand title" href="{{url_for('showCategory')}}">Coinance</a>
+  <ul class="nav justify-content-end">
+    <li class="nav-link active">Hello, {{ login_user.name }} </li>
     <a class="btn btn-primary btn-lg" href="{{url_for('disconnect')}}">Log out</a>
-  </div>
-</div>
+  </ul>
+
+</nav>

@@ -324,8 +324,8 @@ def showCategory():
     if 'username' not in login_session:
         return render_template('public_category.html', category=category, category_item_list= category_item_list)
     else:
-        category_user = login_session['email']
-        return render_template('show_category.html',category=category, category_item_list = category_item_list, category_user=category_user)
+        login_user = session.query(User).filter_by(email=login_session['email']).one()
+        return render_template('show_category.html',category=category, category_item_list = category_item_list, login_user=login_user)
 
 '''
 Create a category
@@ -372,7 +372,8 @@ def editCategory(category_id):
         flash("Coin Edited to %s " % edit_category.name)
         return redirect(url_for('showCategory'))
     else:
-        return render_template('edit_category.html',category = edit_category)
+        login_user = session.query(User).filter_by(email=login_session['email']).one()
+        return render_template('edit_category.html',category = edit_category, login_user= login_user)
 
 '''
 Delete a category
@@ -393,7 +394,8 @@ def deleteCategory(category_id):
         flash("%s Coin Deleted" % delete_category.name)
         return redirect(url_for('showCategory'))
     else:
-        return render_template('delete_category.html',category=delete_category)
+        login_user = session.query(User).filter_by(email=login_session['email']).one()
+        return render_template('delete_category.html',category=delete_category, login_user = login_user)
 
 
 '''
@@ -413,12 +415,14 @@ def categoryItem(category_id):
                  items=items, category_list = category_list)
     # if username is in login_session, but whoever created is not the same user, it will not show any edit or delete function
     elif creator.id != login_session['user_id']:
+        login_user = session.query(User).filter_by(email=login_session['email']).one()
         return render_template('different_user_category_item.html', category=category,
-                items=items, creator = creator, category_list = category_list)
+                items=items, creator = creator, category_list = category_list, login_user = login_user)
     # if those two cases are not covered, we give them function to edit or delete
     else:
+        login_user = session.query(User).filter_by(email=login_session['email']).one()
         return render_template('category_item.html', category=category,
-                items=items, creator = creator, category_list = category_list)
+                items=items, creator = creator, category_list = category_list, login_user = login_user)
 
 
 '''
@@ -447,8 +451,9 @@ def newCategoryItem(category_id):
         return redirect(url_for('categoryItem',category_id=category_id))
     else:
         category = session.query(Category).filter_by(id = category_id).one()
+        login_user = session.query(User).filter_by(email=login_session['email']).one()
         return render_template('category_item_new.html',\
-                category_id=category_id, category=category)
+                category_id=category_id, category=category, login_user=login_user)
 
 
 '''
@@ -490,9 +495,10 @@ def editCategoryItem(category_id,category_item_id):
         if category_id != edit_category_item.category_id:
             return render_template('error.html')
         else:
+            login_user = session.query(User).filter_by(email=login_session['email']).one()
             return render_template('edit_category_item.html',\
                 category_id=category_id, category_item_id=category_item_id,\
-                category_item=edit_category_item)
+                category_item=edit_category_item, login_user = login_user)
 
 '''
 Delete a list of category item
@@ -517,9 +523,10 @@ def deleteCategoryItem(category_id,category_item_id):
         flash("%s Coin Category Deleted" % delete_category_item.name)
         return redirect(url_for('categoryItem', category_id=category_id))
     else:
+        login_user = session.query(User).filter_by(email=login_session['email']).one()
         return render_template('delete_category_item.html',\
                 category_id=category_id,\
-                category_item=delete_category_item)
+                category_item=delete_category_item, login_user=login_user)
 
 @app.route('/category/JSON')
 def categoryJSON():
