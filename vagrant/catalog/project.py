@@ -20,6 +20,10 @@ from flask import make_response
 import requests
 import os
 
+#CSRF protection
+from flask_wtf.csrf import CSRFProtect
+
+csrf = CSRFProtect(app)
 
 CLIENT_ID = json.loads(
     open('client_secrets.json','r').read())['web']['client_id']
@@ -342,11 +346,13 @@ Create a category
 '''
 @app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
+
     # To protect page from unexpected user
     if 'username' not in login_session:
         return redirect('/login')
 
     if request.method == 'POST':
+
         newCategory = Category(name=request.form['name'], user_id= \
                 login_session['user_id'])
         session.add(newCategory)
