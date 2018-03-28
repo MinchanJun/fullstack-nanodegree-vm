@@ -20,6 +20,7 @@ from flask import make_response
 import requests
 import os
 
+
 CLIENT_ID = json.loads(
     open('client_secrets.json','r').read())['web']['client_id']
 
@@ -36,6 +37,13 @@ def showLogin():
     state=''.join(random.choice(string.ascii_uppercase + string.digits)
                 for x in xrange(32))
     login_session['state'] = state
+
+    # if request.method == 'POST':
+    #     users = session.query(User).all()
+    #     for u in users:
+    #         if u.email == request.form['email']:
+    #             return render_template('show_category.html')
+
     return render_template('login.html', STATE=state)
 
 @app.route('/fbconnect', methods=['POST'])
@@ -203,6 +211,7 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
+    print login_session
 
 
     # see if user exists, if it doesn't make a new one
@@ -345,13 +354,18 @@ def editCategory(category_id):
     # To protect page from unexpected user
     if 'username' not in login_session:
         return redirect('/login')
+
     edit_category = session.query(Category).filter_by(id = category_id).one()
+
     if edit_category.user_id != login_session['user_id']:
         return "<script>function myFunction() {alert('You are not\
                 authorized to edit');}</script>\
                 <body onload='myFunction()''>"
+
     if request.method == 'POST':
+
         if request.form['name']:
+            print request.form['name']
             edit_category.name = request.form['name']
         session.add(edit_category)
         session.commit()
@@ -393,9 +407,15 @@ def categoryItem(category_id):
     creator = getUserInfo(category.user_id)
     # print "This is creator id: ", category.id, category.name, category.user.email
     # print "This is login_session['user_id']: ",login_session['user_id'], login_session['email']
-    if 'username' not in login_session or creator.id != login_session['user_id']:
+    # if username is not in login_session, then it will only display coins without any edit or delete function
+    if 'username' not in login_session:
         return render_template('public_category_item.html', category=category,
                  items=items, category_list = category_list)
+    # if username is in login_session, but whoever created is not the same user, it will not show any edit or delete function
+    elif creator.id != login_session['user_id']:
+        return render_template('different_user_category_item.html', category=category,
+                items=items, creator = creator, category_list = category_list)
+    # if those two cases are not covered, we give them function to edit or delete
     else:
         return render_template('category_item.html', category=category,
                 items=items, creator = creator, category_list = category_list)
@@ -448,14 +468,19 @@ def editCategoryItem(category_id,category_item_id):
         return "<script>function myFunction() {alert('You are not \
                 authorized to edit');}</script>\
                 <body onload='myFunction()''>"
+
+
     if request.method == 'POST':
 
         if request.form['name']:
             edit_category_item.name = request.form['name']
         if request.form['description']:
             edit_category_item.description = request.form['description']
+        print request.form['description']
         session.add(edit_category_item)
+
         session.commit()
+
         flash("%s Coin Category Edited" % edit_category_item.name)
         return redirect(url_for('categoryItem',category_id=category_id))
     else:
