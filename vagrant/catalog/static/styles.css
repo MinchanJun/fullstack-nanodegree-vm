@@ -1,6 +1,9 @@
 body{
   background-image: url("crypto_title.jpg");
 }
+.signin{
+  margin: 10%;
+}
 .header{
   display: flex;
   background-color: #CEFEFF;
@@ -47,4 +50,15 @@ body{
 }
 .color{
   color: white;
+}
+.google{
+  margin-top: 5%;
+  max-width: 100%;
+
+}
+.thirdparty{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
