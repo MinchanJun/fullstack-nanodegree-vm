@@ -7,6 +7,8 @@
       category_id = category_id,
       category_item_id=category_item.id)}}" method="POST">
         <div class="form-group">
+          <input type="hidden" name="csrf_token"
+          value="{{ csrf_token() }}"/>
           <label for="formGroupExampleInput" class="color">
             Name of Details</label>
           <input type="text" class="form-control" name="name"

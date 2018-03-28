@@ -7,6 +7,8 @@
       category_id = category_id)}}" method="POST">
         <h1 class="color">Add a new {{category.name}} details</h1>
         <div class="form-group">
+          <input type="hidden" name="csrf_token"
+          value="{{ csrf_token() }}"/>
           <label for="formGroupExampleInput"
           class="color">Name of details: (ex: price, description,
             future price, related company...)</label>

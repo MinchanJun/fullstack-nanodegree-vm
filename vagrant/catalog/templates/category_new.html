@@ -5,6 +5,8 @@
     <div class="container">
       <form class="" action="{{url_for('newCategory')}}"
         method="POST">
+        <input type="hidden" name="csrf_token"
+        value="{{ csrf_token() }}"/>
         <h1 class="color">Add a new coin</h1>
         <div class="form-group">
           <label for="formGroupExampleInput"
@@ -12,6 +14,7 @@
             NEM, Ethereum Classic...)</label>
           <input type="text" class="form-control"
           name="name" id="formGroupExampleInput">
+
         </div>
         <button type="submit" class="btn btn-primary">Create</button>
       </form>
