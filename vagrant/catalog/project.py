@@ -318,7 +318,7 @@ Shows list of categories
 @app.route('/category/')
 def showCategory():
     category = session.query(Category).all()
-    category_item_list = session.query(CategoryItem).order_by(desc(CategoryItem.id)).all()
+    category_item_list = session.query(CategoryItem).order_by(desc(CategoryItem.id)).limit(7).all()
 
     #print "hello", category.user_id
     if 'username' not in login_session:
