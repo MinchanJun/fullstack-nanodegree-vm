@@ -4,10 +4,8 @@ body{
 .signin{
   margin: 10%;
 }
-.header{
-  display: flex;
-  background-color: #CEFEFF;
-  margin-bottom: 5%;
+.navbar{
+  margin-bottom: 10%;
 }
 .title{
   font-family: 'Indie Flower',cursive;
@@ -16,7 +14,7 @@ body{
 }
 .login{
   max-width: 100%;
-  margin-left: 35%;
+  margin-left:33%;
 }
 .flash{
   max-width: 100%;
@@ -61,4 +59,7 @@ body{
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+.marginc{
+  margin-top: 5%;
 }
