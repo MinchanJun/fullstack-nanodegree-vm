@@ -1,6 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, \
-                flash, jsonify
-app = Flask(__name__)
+from flask import (Flask,
+                   render_template,
+                   request,
+                   redirect,
+                   url_for,
+                   flash,
+                   jsonify)
+
 
 # Update desc function to get the most updated result
 from sqlalchemy import create_engine, desc
@@ -23,6 +28,7 @@ import os
 #CSRF protection
 from flask_wtf.csrf import CSRFProtect
 
+app = Flask(__name__)
 csrf = CSRFProtect(app)
 
 CLIENT_ID = json.loads(
@@ -41,12 +47,6 @@ def showLogin():
     state=''.join(random.choice(string.ascii_uppercase + string.digits)
                 for x in xrange(32))
     login_session['state'] = state
-
-    # if request.method == 'POST':
-    #     users = session.query(User).all()
-    #     for u in users:
-    #         if u.email == request.form['email']:
-    #             return render_template('show_category.html')
 
     return render_template('login.html', STATE=state)
 
